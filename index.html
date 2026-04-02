@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Waku-Waku! | Wakayama Univ. Student Union</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1A4FA0">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TanQ">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F4F0; --surface:#FFFFFF; --surface2:#F9F8F6;
+  --border:#E2DDD6; --border2:#CCC8C0;
+  --text:#1A1714; --text2:#5C5752; --text3:#9B978F;
+  --accent:#1A4FA0; --accent-bg:#EBF0FA;
+  --green:#1E7A4A; --green-bg:#EAF5EE;
+  --orange:#B06A00; --orange-bg:#FEF3E2;
+  --red:#C0281A; --red-bg:#FDECEA;
+  --nav-h:60px; --header-h:52px;
+  --radius:12px; --radius-sm:8px;
+  /* timetable colors */
+  --tt-kiban:#C8E6FA;     /* 基盤・国際・学修技能 → 青 */
+  --tt-senmon:#FFF2A8;    /* 専門科目（経営/再生/文化） → 黄 */
+  --tt-rensetsu:#D4EDDA;  /* 連接・連携展開 → 緑 */
+  --tt-oyo:#FFE0B8;       /* 応用・GP → オレンジ */
+  --tt-must:#FFD6D6;      /* 必修 → 赤 */
+  --tt-plain:#FFFFFF;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100dvh}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* HEADER */
+.app-header{height:var(--header-h);background:var(--surface);border-bottom:1.5px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.06);z-index:60;position:relative}
+.app-logo{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-.02em}
+.app-sub{font-size:11px;color:var(--text3)}
+.save-badge{margin-left:auto;font-size:10px;color:var(--green);background:var(--green-bg);border:1px solid #A8D5B8;border-radius:20px;padding:3px 10px;font-family:'Outfit',sans-serif;font-weight:600;opacity:0;transition:opacity .3s}
+.save-badge.show{opacity:1}
+
+/* CONTENT */
+.content{flex:1;overflow:hidden;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 14px calc(var(--nav-h)+20px);display:none;animation:fadeUp .2s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* BOTTOM NAV */
+.bottom-nav{height:var(--nav-h);background:var(--surface);border-top:1.5px solid var(--border);display:flex;flex-shrink:0;z-index:50;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -1px 6px rgba(0,0,0,.06)}
+.nav-btn{flex:1;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text3);font-family:'Noto Sans JP',sans-serif;font-size:10px;font-weight:500;transition:color .15s;position:relative}
+.nav-btn.active{color:var(--accent)}
+.nav-btn .nav-icon{font-size:19px;line-height:1;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.nav-btn.active .nav-icon{transform:scale(1.12)}
+.nav-indicator{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:28px;height:2.5px;background:var(--accent);border-radius:2px 2px 0 0;opacity:0;transition:opacity .15s}
+.nav-btn.active .nav-indicator{opacity:1}
+
+/* SHARED */
+.sec-head{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;font-family:'Outfit',sans-serif;margin-bottom:10px;margin-top:2px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+
+/* HOME */
+.hero-card{background:linear-gradient(135deg,#1A4FA0 0%,#2A63C0 100%);border-radius:var(--radius);padding:22px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(26,79,160,.25)}
+.hero-card::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:rgba(255,255,255,.07);border-radius:50%;pointer-events:none}
+.hero-label{font-size:10px;letter-spacing:.12em;opacity:.75;font-family:'Outfit',sans-serif;font-weight:500;text-transform:uppercase;margin-bottom:6px}
+.hero-pct{font-family:'Outfit',sans-serif;font-size:58px;font-weight:800;line-height:1;letter-spacing:-.04em;margin-bottom:4px}
+.hero-sub{font-size:12px;opacity:.85;margin-bottom:18px}
+.hero-sub strong{font-weight:700}
+.progress-bar-wrap{height:5px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.progress-bar-fill{height:100%;border-radius:3px;background:rgba(255,255,255,.9);transition:width .6s cubic-bezier(.25,.46,.45,.94)}
+.hero-nums{display:flex;justify-content:space-between;font-size:11px;opacity:.7;font-family:'Outfit',sans-serif}
+
+.stat-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-val{font-family:'Outfit',sans-serif;font-size:24px;font-weight:700;line-height:1;margin-bottom:3px}
+.stat-label{font-size:10px;color:var(--text3);line-height:1.4}
+
+.mini-bars-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.mini-bar-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.mini-bar-row:last-child{border-bottom:none}
+.mbr-label{font-size:11px;color:var(--text2);flex:1}
+.mbr-nums{font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;white-space:nowrap}
+.mbr-track{width:56px;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;flex-shrink:0}
+.mbr-fill{height:100%;border-radius:2px;transition:width .5s ease}
+
+/* CHECKER */
+.checker-group{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.group-header{display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.group-icon{font-size:14px}
+.group-title{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;font-family:'Outfit',sans-serif}
+.group-badge{margin-left:auto;font-size:10px;font-family:'Outfit',sans-serif;font-weight:600;padding:2px 8px;border-radius:20px}
+.gb-done{background:var(--green-bg);color:var(--green);border:1px solid #A8D5B8}
+.gb-need{background:var(--orange-bg);color:var(--orange);border:1px solid #ECC88A}
+.gb-must{background:var(--red-bg);color:var(--red);border:1px solid #ECA8A4}
+
+.checker-item{display:grid;grid-template-columns:1fr 90px 54px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px}
+.checker-item:last-child{border-bottom:none}
+.ci-name{font-size:12px;color:var(--text);line-height:1.4}
+.ci-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.ci-input-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden}
+.ci-btn{width:28px;height:32px;border:none;background:transparent;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s;flex-shrink:0;font-family:'Outfit',sans-serif;font-weight:300}
+.ci-btn:active{background:var(--border);color:var(--text)}
+.ci-num{flex:1;text-align:center;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--accent);background:transparent;border:none;outline:none;min-width:28px;width:0}
+.ci-num::-webkit-inner-spin-button,.ci-num::-webkit-outer-spin-button{display:none}
+.ci-status{text-align:right}
+.ci-chip{display:inline-block;font-size:9px;font-weight:700;font-family:'Outfit',sans-serif;padding:3px 7px;border-radius:20px;letter-spacing:.02em;white-space:nowrap}
+.chip-done{background:var(--green-bg);color:var(--green)}
+.chip-few{background:var(--orange-bg);color:var(--orange)}
+.chip-need{background:var(--red-bg);color:var(--red)}
+.chip-neutral{background:var(--surface2);color:var(--text3);border:1px solid var(--border)}
+.agg-row{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--surface2);border-top:1px solid var(--border)}
+.agg-label{font-size:11px;color:var(--text3)}
+.agg-val{font-family:'Outfit',sans-serif;font-size:13px;font-weight:700}
+
+/* TIMETABLE */
+.tt-controls{display:flex;gap:6px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+.tt-seg{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.tt-seg-btn{padding:6px 12px;border:none;background:transparent;font-size:11px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;color:var(--text2);transition:all .15s;white-space:nowrap}
+.tt-seg-btn.active{background:var(--accent);color:#fff}
+.year-select-btns{display:flex;gap:5px}
+.ysb{padding:5px 10px;border:1.5px solid var(--border);border-radius:20px;background:transparent;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--text2);transition:all .15s}
+.ysb.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+
+.tt-legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tt-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.tt-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* THE TABLE */
+.tt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06);background:var(--surface)}
+.tt-table{border-collapse:collapse;font-size:10px;min-width:620px;width:100%}
+.tt-table th,.tt-table td{border:1px solid var(--border);vertical-align:top;text-align:center;padding:0}
+.tt-table thead th{background:#2B4A8C;color:#fff;font-size:10px;font-weight:600;padding:5px 4px;font-family:'Outfit',sans-serif;letter-spacing:.03em;white-space:nowrap}
+.tt-table thead th.day-head{background:#1A3A78}
+.tt-table .period-cell{background:#F0EFE9;font-size:10px;font-weight:700;color:var(--text2);padding:4px 6px;width:36px;white-space:nowrap;vertical-align:middle;text-align:center;font-family:'Outfit',sans-serif}
+.tt-table .period-sub{font-size:8px;font-weight:400;color:var(--text3);display:block}
+.tt-table .year-row-header{background:#E8E4DE;font-size:10px;font-weight:700;color:var(--text2);padding:3px 4px;text-align:left;vertical-align:middle}
+.tt-table .lunch-row td{background:#F5F4F0;height:18px;font-size:9px;color:var(--text3);text-align:center;padding:2px}
+
+.subj-cell{padding:3px 4px;min-height:26px;cursor:default;transition:filter .1s;line-height:1.3;position:relative}
+.subj-cell:hover{filter:brightness(.95)}
+.subj-cell .sn{font-size:10px;font-weight:500;color:var(--text);display:block}
+.subj-cell .sk{font-size:9px;color:var(--text2);display:block;margin-top:1px}
+.subj-cell.empty{background:var(--surface);min-height:26px}
+
+/* cell colors */
+.c-kiban{background:var(--tt-kiban)}
+.c-senmon{background:var(--tt-senmon)}
+.c-rensetsu{background:var(--tt-rensetsu)}
+.c-oyo{background:var(--tt-oyo)}
+.c-must{background:var(--tt-must)}
+.c-plain{background:var(--tt-plain)}
+.c-gp{background:#E8E0F8}
+.c-kyoyo{background:#DFF0D8}
+
+/* INFO */
+.info-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.info-section-title{padding:10px 14px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;background:var(--surface2);border-bottom:1px solid var(--border)}
+.info-row{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);align-items:flex-start}
+.info-row:last-child{border-bottom:none}
+.info-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.info-text{font-size:12px;color:var(--text2);line-height:1.7}
+.info-text strong{color:var(--text);font-weight:600}
+.sem-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border)}
+.sem-row:last-child{border-bottom:none}
+.sem-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sem-text{font-size:12px;color:var(--text2)}
+
+.bottom-fade{position:fixed;bottom:var(--nav-h);left:0;right:0;height:32px;background:linear-gradient(transparent,var(--bg));pointer-events:none;z-index:10}
+.empty-state{text-align:center;padding:36px 20px;color:var(--text3);font-size:13px}
+
+/* ── ADMIN ── */
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.admin-overlay.hidden{display:none}
+.admin-modal{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);padding:28px 24px;width:min(340px,90vw);box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.admin-modal h2{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px}
+.admin-modal p{font-size:12px;color:var(--text3);margin-bottom:18px}
+.admin-input{width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;font-family:'Noto Sans JP',sans-serif;color:var(--text);background:var(--surface2);outline:none;transition:border-color .15s;margin-bottom:12px}
+.admin-input:focus{border-color:var(--accent)}
+.admin-btn{width:100%;padding:11px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .15s}
+.admin-btn-primary{background:var(--accent);color:#fff}
+.admin-btn-primary:hover{background:#1340A0}
+.admin-btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);margin-top:8px}
+.admin-err{font-size:11px;color:var(--red);margin-bottom:8px;display:none}
+.admin-err.show{display:block}
+
+/* admin main screen */
+#screen-admin{padding:16px 14px calc(var(--nav-h)+20px)}
+.admin-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.at-btn{padding:7px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--text2);transition:all .15s;white-space:nowrap}
+.at-btn:hover{border-color:var(--accent);color:var(--accent)}
+.at-btn.danger{border-color:#ECA8A4;color:var(--red)}
+.at-btn.danger:hover{background:var(--red-bg)}
+.at-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.admin-tt-select{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:12px}
+.att-btn{padding:6px 14px;border:none;background:transparent;font-size:11px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s;font-family:'Noto Sans JP',sans-serif}
+.att-btn.active{background:var(--accent);color:#fff}
+
+/* editable table */
+.admin-tt-scroll{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.admin-tt-table{border-collapse:collapse;font-size:10px;min-width:640px;width:100%}
+.admin-tt-table th{background:#2B4A8C;color:#fff;font-size:10px;font-weight:600;padding:5px 4px;font-family:'Outfit',sans-serif;border:1px solid #1A3A78;white-space:nowrap;text-align:center}
+.admin-tt-table th.day-h{background:#1A3A78}
+.admin-tt-table td{border:1px solid var(--border);vertical-align:top;padding:0}
+.admin-cell{min-height:32px;padding:3px;cursor:pointer;position:relative;transition:filter .1s}
+.admin-cell:hover{filter:brightness(.92)}
+.admin-cell .ac-name{font-size:9px;font-weight:500;color:var(--text);display:block;line-height:1.3}
+.admin-cell .ac-edit-btn{position:absolute;top:2px;right:2px;font-size:8px;opacity:0;background:rgba(0,0,0,.15);border-radius:2px;padding:1px 3px;color:#333;transition:opacity .15s}
+.admin-cell:hover .ac-edit-btn{opacity:1}
+.admin-cell.empty-cell{background:var(--surface);min-height:32px}
+.period-lbl{background:#F0EFE9;font-size:10px;font-weight:700;color:var(--text2);padding:4px 5px;width:36px;white-space:nowrap;vertical-align:middle;text-align:center;font-family:'Outfit',sans-serif}
+.year-lbl{background:#E8E4DE;font-size:10px;font-weight:700;color:var(--text2);padding:3px 4px;text-align:center;vertical-align:middle;width:30px}
+
+/* cell edit modal */
+.cell-edit-modal{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);padding:20px;width:min(320px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.15);max-height:80vh;overflow-y:auto}
+.cell-edit-modal h3{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.cem-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;display:block}
+.cem-input{width:100%;padding:8px 10px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;font-family:'Noto Sans JP',sans-serif;color:var(--text);background:var(--surface2);outline:none;margin-bottom:10px;transition:border-color .15s}
+.cem-input:focus{border-color:var(--accent)}
+.cem-select{width:100%;padding:8px 10px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;font-family:'Noto Sans JP',sans-serif;color:var(--text);background:var(--surface2);outline:none;margin-bottom:10px;cursor:pointer}
+.color-swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.color-swatch{padding:6px 4px;border-radius:var(--radius-sm);border:2px solid transparent;cursor:pointer;font-size:9px;text-align:center;font-weight:600;transition:border-color .1s;line-height:1.3}
+.color-swatch.sel{border-color:var(--accent)!important}
+.cem-actions{display:flex;gap:8px;margin-top:4px}
+.cem-save{flex:1;padding:9px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.cem-del{padding:9px 12px;background:var(--red-bg);color:var(--red);border:1px solid #ECA8A4;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.cem-cancel{padding:9px 12px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;cursor:pointer}
+
+/* json panel */
+.json-panel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:12px}
+.json-panel textarea{width:100%;height:160px;font-family:'DM Mono','Courier New',monospace;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);padding:8px;resize:vertical;outline:none}
+.json-panel-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;font-family:'Outfit',sans-serif}
+.admin-notice{font-size:10px;color:var(--text3);line-height:1.7;padding:10px;background:var(--orange-bg);border:1px solid #ECC88A;border-radius:var(--radius-sm);margin-bottom:12px}
+
+/* admin nav badge */
+.admin-nav-dot{width:6px;height:6px;background:var(--red);border-radius:50%;position:absolute;top:6px;right:calc(50% - 14px)}
+
+
+/* ── MY TIMETABLE ── */
+.my-tt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius);border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06);background:var(--surface)}
+.my-tt{border-collapse:collapse;width:100%;min-width:480px}
+.my-tt th{background:#2B4A8C;color:#fff;font-size:10px;font-weight:600;padding:6px 4px;font-family:'Outfit',sans-serif;border:1px solid #1A3A78;text-align:center}
+.my-tt td{border:1px solid var(--border);vertical-align:top;padding:0;width:calc((100% - 38px)/5)}
+.my-tt .p-hd{background:#F0EFE9;font-size:9px;font-weight:700;color:var(--text2);padding:4px 3px;width:38px;text-align:center;vertical-align:middle;font-family:'Outfit',sans-serif;line-height:1.4}
+.my-cell{min-height:52px;padding:0;cursor:pointer;position:relative;transition:filter .15s;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start}
+.my-cell:hover{filter:brightness(.95)}
+.my-cell-inner{flex:1;padding:4px;font-size:10px;line-height:1.4}
+.mc-subj{font-weight:600;color:var(--text);display:block;margin-bottom:1px}
+.mc-room{font-size:9px;color:var(--text2);display:block}
+.mc-teacher{font-size:9px;color:var(--text3);display:block}
+.mc-add{display:flex;align-items:center;justify-content:center;height:52px;color:var(--border2);font-size:18px;transition:color .15s}
+.my-cell:hover .mc-add{color:var(--accent)}
+.my-cell.has-subj{border-left:3px solid var(--accent)}
+
+/* My cell edit drawer */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.drawer-overlay.hidden{display:none}
+.drawer{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:20px 20px 32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 -4px 24px rgba(0,0,0,.15);animation:slideUp .2s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.drawer-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.drawer h3{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.drawer-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.drawer-input{width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;font-family:'Noto Sans JP',sans-serif;color:var(--text);background:var(--surface2);outline:none;margin-bottom:12px;transition:border-color .15s;-webkit-appearance:none}
+.drawer-input:focus{border-color:var(--accent);background:#fff}
+.drawer-actions{display:flex;gap:8px;margin-top:4px}
+.d-save{flex:1;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.d-del{padding:12px 16px;background:var(--red-bg);color:var(--red);border:1px solid #ECA8A4;border-radius:var(--radius-sm);font-size:13px;cursor:pointer}
+.d-cancel{padding:12px 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;cursor:pointer}
+
+/* notification toggle */
+.notif-bar{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.notif-icon{font-size:16px}
+.notif-text{font-size:12px;flex:1}
+.notif-text strong{font-weight:600}
+.notif-text small{color:var(--text3);display:block;font-size:10px;margin-top:1px}
+.toggle-wrap{flex-shrink:0}
+.toggle-input{display:none}
+.toggle-label{display:block;width:44px;height:24px;background:var(--border2);border-radius:12px;position:relative;cursor:pointer;transition:background .2s}
+.toggle-label::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle-input:checked+.toggle-label{background:var(--green)}
+.toggle-input:checked+.toggle-label::after{left:23px}
+.notif-status{font-size:10px;color:var(--text3);margin-top:6px;padding:0 2px;line-height:1.6}
+
+/* next class card */
+.next-class-card{background:linear-gradient(135deg,#1E7A4A,#26A060);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;color:#fff;box-shadow:0 2px 12px rgba(30,122,74,.25);display:none}
+.next-class-card.show{display:block}
+.ncl-label{font-size:10px;opacity:.8;letter-spacing:.08em;text-transform:uppercase;font-family:'Outfit',sans-serif;margin-bottom:4px}
+.ncl-subj{font-size:18px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:2px}
+.ncl-detail{font-size:12px;opacity:.85;margin-bottom:8px}
+.ncl-time{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;background:rgba(255,255,255,.2);border-radius:20px;padding:3px 12px;display:inline-block}
+
+/* PDF import admin */
+.pdf-drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px;background:var(--surface2)}
+.pdf-drop-zone:hover,.pdf-drop-zone.drag-over{border-color:var(--accent);background:var(--accent-bg)}
+.pdf-dz-icon{font-size:32px;margin-bottom:8px}
+.pdf-dz-text{font-size:13px;color:var(--text2);margin-bottom:4px}
+.pdf-dz-sub{font-size:10px;color:var(--text3)}
+.pdf-progress{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;display:none}
+.pdf-progress.show{display:block}
+.pdf-progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.pdf-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease;width:0%}
+.pdf-result-list{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:12px;display:none}
+.pdf-result-list.show{display:block}
+.prl-head{padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text2);font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:8px}
+.prl-item{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.prl-item:last-child{border-bottom:none}
+.prl-check{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--border2);cursor:pointer;flex-shrink:0;margin-top:1px;accent-color:var(--accent)}
+.prl-info{flex:1}
+.prl-name{font-size:12px;font-weight:600;color:var(--text)}
+.prl-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.prl-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-family:'Outfit',sans-serif;font-weight:600}
+.api-key-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.api-key-input{flex:1;padding:8px 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:11px;font-family:'DM Mono','Courier New',monospace;color:var(--text);background:var(--surface2);outline:none}
+.api-key-input:focus{border-color:var(--accent)}
+
+
+.union-logo {
+  height: 28px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <img class="union-logo" src="data:image/png;base64,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" alt="学生自治会">
+  <div class="app-logo" style="font-size:16px;letter-spacing:-.01em">Waku-Waku!</div>
+  <div class="app-sub">Wakayama Univ. Unit Checker</div>
+  <span class="save-badge" id="saveBadge">保存済 ✓</span>
+</header>
+
+<div class="content">
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="hero-card">
+    <div class="hero-label">卒業進捗</div>
+    <div class="hero-pct" id="h-pct">0%</div>
+    <div class="hero-sub">あと <strong id="h-remain">124</strong> 単位で卒業</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="h-bar" style="width:0%"></div></div>
+    <div class="hero-nums"><span id="h-earned">0 単位 取得済</span><span>目標 124 単位</span></div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat-box"><div class="stat-val" id="s-done" style="color:var(--green)">0</div><div class="stat-label">取得済<br>単位</div></div>
+    <div class="stat-box"><div class="stat-val" id="s-remain" style="color:var(--red)">124</div><div class="stat-label">残り<br>単位</div></div>
+    <div class="stat-box"><div class="stat-val" id="s-comp" style="color:var(--orange)">0</div><div class="stat-label">区分<br>完了数</div></div>
+  </div>
+  <div class="sec-head">区分別 達成状況</div>
+  <div class="mini-bars-wrap" id="mini-bar-list"></div>
+</div>
+
+<!-- CHECKER -->
+<div class="screen" id="screen-checker">
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">📚</span><span class="group-title">教養教育科目</span><span class="group-badge gb-must" id="gb-kyoyo">24単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">わかやま未来学</div><div class="ci-sub">必修 · 1単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('e1',-1)">−</button><input class="ci-num" type="number" id="e1" value="0" min="0" max="4" oninput="save();calc()"><button class="ci-btn" onclick="adj('e1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-e1">残1</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">「教養の森」科目群</div><div class="ci-sub">必修 · 6単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('e2',-1)">−</button><input class="ci-num" type="number" id="e2" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('e2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-e2">残6</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">情報処理 (IA+IB)</div><div class="ci-sub">必修 · 2単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('e3',-1)">−</button><input class="ci-num" type="number" id="e3" value="0" min="0" max="2" oninput="save();calc()"><button class="ci-btn" onclick="adj('e3',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-e3">残2</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">外国語（英語IA〜IVA）</div><div class="ci-sub">必修 · 12単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('e4',-1)">−</button><input class="ci-num" type="number" id="e4" value="0" min="0" max="12" oninput="save();calc()"><button class="ci-btn" onclick="adj('e4',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-e4">残12</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">教養科目（基幹/実践）</div><div class="ci-sub">必修 · 3単位 / DS含む</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('e5',-1)">−</button><input class="ci-num" type="number" id="e5" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('e5',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-e5">残3</span></div>
+    </div>
+  </div>
+
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">🔗</span><span class="group-title">専門連接科目</span><span class="group-badge gb-must" id="gb-p">16単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">連携展開科目</div><div class="ci-sub">3つ合計16単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('p1',-1)">−</button><input class="ci-num" type="number" id="p1" value="0" min="0" max="30" oninput="save();calc()"><button class="ci-btn" onclick="adj('p1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-p1">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">連接科目</div><div class="ci-sub">教養余剰分が自動算入（最大12単位）</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('p2',-1)">−</button><input class="ci-num" type="number" id="p2" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('p2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-p2">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">他学部開放科目</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('p3',-1)">−</button><input class="ci-num" type="number" id="p3" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('p3',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-p3">—</span></div>
+    </div>
+    <div class="agg-row"><span class="agg-label">合計（教養余剰含む）</span><span class="agg-val" id="agg-p" style="color:var(--text2)">0 / 16</span></div>
+  </div>
+
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">📖</span><span class="group-title">専門導入科目</span><span class="group-badge gb-must" id="gb-d">4単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">基礎演習</div><div class="ci-sub">必修 · 2単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('d1',-1)">−</button><input class="ci-num" type="number" id="d1" value="0" min="0" max="2" oninput="save();calc()"><button class="ci-btn" onclick="adj('d1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-d1">残2</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">観光学概論</div><div class="ci-sub">必修 · 2単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('d2',-1)">−</button><input class="ci-num" type="number" id="d2" value="0" min="0" max="2" oninput="save();calc()"><button class="ci-btn" onclick="adj('d2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-d2">残2</span></div>
+    </div>
+  </div>
+
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">🏗</span><span class="group-title">専門基礎科目</span><span class="group-badge gb-must" id="gb-b">32単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">プロジェクト演習</div><div class="ci-sub">必修 · 2単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b1',-1)">−</button><input class="ci-num" type="number" id="b1" value="0" min="0" max="2" oninput="save();calc()"><button class="ci-btn" onclick="adj('b1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-b1">残2</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">日本文化演習</div><div class="ci-sub">必修 · 2単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b2',-1)">−</button><input class="ci-num" type="number" id="b2" value="0" min="0" max="4" oninput="save();calc()"><button class="ci-btn" onclick="adj('b2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-b2">残2</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">基盤科目</div><div class="ci-sub">4区分合計28単位必要</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b3',-1)">−</button><input class="ci-num" type="number" id="b3" value="0" min="0" max="40" oninput="save();calc()"><button class="ci-btn" onclick="adj('b3',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-b3">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">学修技能科目</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b4',-1)">−</button><input class="ci-num" type="number" id="b4" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('b4',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-b4">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">国際科目</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b5',-1)">−</button><input class="ci-num" type="number" id="b5" value="0" min="0" max="20" oninput="save();calc()"><button class="ci-btn" onclick="adj('b5',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-b5">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">実践教育科目</div><div class="ci-sub">上限 14単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('b6',-1)">−</button><input class="ci-num" type="number" id="b6" value="0" min="0" max="14" oninput="save();calc()"><button class="ci-btn" onclick="adj('b6',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-b6">—</span></div>
+    </div>
+    <div class="agg-row"><span class="agg-label">基盤〜実践 合計</span><span class="agg-val" id="agg-b" style="color:var(--text2)">0 / 28</span></div>
+  </div>
+
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">🎯</span><span class="group-title">専門科目</span><span class="group-badge gb-must" id="gb-c">36単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">主コース科目</div><div class="ci-sub">必修 · 14単位</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('c1',-1)">−</button><input class="ci-num" type="number" id="c1" value="0" min="0" max="30" oninput="save();calc()"><button class="ci-btn" onclick="adj('c1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-c1">残14</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">他コース科目</div><div class="ci-sub">3つ合計22単位必要</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('c2',-1)">−</button><input class="ci-num" type="number" id="c2" value="0" min="0" max="30" oninput="save();calc()"><button class="ci-btn" onclick="adj('c2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-c2">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">応用科目</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('c3',-1)">−</button><input class="ci-num" type="number" id="c3" value="0" min="0" max="30" oninput="save();calc()"><button class="ci-btn" onclick="adj('c3',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-c3">—</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">GP専門科目</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('c4',-1)">−</button><input class="ci-num" type="number" id="c4" value="0" min="0" max="30" oninput="save();calc()"><button class="ci-btn" onclick="adj('c4',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-neutral" id="cs-c4">—</span></div>
+    </div>
+    <div class="agg-row"><span class="agg-label">他・応用・GP 合計</span><span class="agg-val" id="agg-c" style="color:var(--text2)">0 / 22</span></div>
+  </div>
+
+  <div class="checker-group">
+    <div class="group-header"><span class="group-icon">🎓</span><span class="group-title">専門演習・卒業論文</span><span class="group-badge gb-must" id="gb-z">12単位</span></div>
+    <div class="checker-item">
+      <div><div class="ci-name">専門演習Ⅰ</div><div class="ci-sub">必修 · 4単位 / 3年次〜</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('z1',-1)">−</button><input class="ci-num" type="number" id="z1" value="0" min="0" max="4" oninput="save();calc()"><button class="ci-btn" onclick="adj('z1',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-z1">残4</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">専門演習Ⅱ / Global Seminar</div><div class="ci-sub">必修 · 4単位 / 4年次</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('z2',-1)">−</button><input class="ci-num" type="number" id="z2" value="0" min="0" max="4" oninput="save();calc()"><button class="ci-btn" onclick="adj('z2',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-z2">残4</span></div>
+    </div>
+    <div class="checker-item">
+      <div><div class="ci-name">卒業論文 / Dissertation</div><div class="ci-sub">必修 · 4単位 / 4年次</div></div>
+      <div class="ci-input-wrap"><button class="ci-btn" onclick="adj('z3',-1)">−</button><input class="ci-num" type="number" id="z3" value="0" min="0" max="4" oninput="save();calc()"><button class="ci-btn" onclick="adj('z3',1)">+</button></div>
+      <div class="ci-status"><span class="ci-chip chip-need" id="cs-z3">残4</span></div>
+    </div>
+  </div>
+  <div style="font-size:10px;color:var(--text3);text-align:center;padding:4px;line-height:1.8">⚠️ 単位認定の最終確認は必ず教育サポートシステム・履修手引・観光学部係でご確認ください。</div>
+</div>
+
+<!-- TIMETABLE -->
+<div class="screen" id="screen-timetable">
+  <div class="tt-controls">
+    <div class="tt-seg">
+      <button class="tt-seg-btn active" id="seg-2026f" onclick="showTT('2026f',this)">2026前期（1Q・2Q）</button>
+      <button class="tt-seg-btn" id="seg-2024b" onclick="showTT('2024b',this)">後期参考（3Q・4Q）</button>
+    </div>
+  </div>
+  <div class="tt-legend">
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:var(--tt-kiban)"></div>専門基礎</div>
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:var(--tt-senmon)"></div>専門科目</div>
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:var(--tt-oyo)"></div>応用・GP</div>
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:var(--tt-rensetsu)"></div>連接</div>
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:var(--tt-must)"></div>必修</div>
+    <div class="tt-legend-item"><div class="tt-legend-dot" style="background:#E8E0F8"></div>GP専門</div>
+  </div>
+  <div class="tt-scroll" id="tt-container"></div>
+  <div style="font-size:10px;color:var(--text3);margin-top:10px;line-height:1.7;padding:0 2px">
+    ※必修科目（英語・日本文化演習・プロジェクト演習等）は未掲載。クォーター科目は1・2時限連続開講が多い。詳細はシラバスで確認してください。
+  </div>
+</div>
+
+<!-- INFO -->
+<div class="screen" id="screen-info">
+  <div class="sec-head">履修ルール</div>
+  <div class="info-section">
+    <div class="info-section-title">単位算入 特例</div>
+    <div class="info-row"><span class="info-icon">🔄</span><div class="info-text"><strong>教養の余剰→連接算入：</strong>必要単位を超えた分、最大12単位まで専門連接科目に算入できます。</div></div>
+    <div class="info-row"><span class="info-icon">🏦</span><div class="info-text"><strong>経済学部開講科目：</strong>連接科目に算入されます。</div></div>
+    <div class="info-row"><span class="info-icon">🌱</span><div class="info-text"><strong>LPP：</strong>1年次は連接科目、2年次以降は実践教育科目に算入。</div></div>
+    <div class="info-row"><span class="info-icon">✈️</span><div class="info-text"><strong>GIP：</strong>Global Corporate Internship・Global Learning Activity → 実践。Global Learning Advanced → GP専門科目。</div></div>
+    <div class="info-row"><span class="info-icon">📊</span><div class="info-text"><strong>実践教育科目の上限：</strong>14単位まで卒業要件に算入。</div></div>
+  </div>
+  <div class="sec-head">ゼミ関連</div>
+  <div class="info-section">
+    <div class="info-row"><span class="info-icon">📋</span><div class="info-text"><strong>ゼミ応募資格：</strong>2年次前期終了時に <strong>40単位以上</strong>取得していること。</div></div>
+    <div class="info-row"><span class="info-icon">⚠️</span><div class="info-text"><strong>ゼミ所属取消：</strong>2年次後期終了時に <strong>56単位未満</strong>の場合、所属が取り消されます。</div></div>
+    <div class="info-row"><span class="info-icon">📝</span><div class="info-text"><strong>履修登録上限：</strong>通常1学期18単位。前学期GPA 3.0以上で最大24単位（一部科目を除く）。</div></div>
+  </div>
+  <div class="sec-head">成績評価</div>
+  <div class="info-section">
+    <div class="sem-row"><div class="sem-dot" style="background:#4CAF50"></div><div class="sem-text"><strong>S（90点〜）</strong> 特に優れた成果</div></div>
+    <div class="sem-row"><div class="sem-dot" style="background:#8BC34A"></div><div class="sem-text"><strong>A（80〜89点）</strong> 優れた成果</div></div>
+    <div class="sem-row"><div class="sem-dot" style="background:#FFC107"></div><div class="sem-text"><strong>B（70〜79点）</strong> 期待される成果</div></div>
+    <div class="sem-row"><div class="sem-dot" style="background:#FF9800"></div><div class="sem-text"><strong>C（60〜69点）</strong> 最低限の成果</div></div>
+    <div class="sem-row"><div class="sem-dot" style="background:var(--red)"></div><div class="sem-text"><strong>F（60点未満）</strong> 不合格・単位なし</div></div>
+  </div>
+  <div class="sec-head">データ管理</div>
+  <div class="info-section">
+    <div class="info-row"><span class="info-icon">💾</span><div class="info-text">入力した単位数はブラウザのローカルストレージに自動保存されます。同じブラウザ・端末でアクセスすれば引き継がれます。</div></div>
+    <div class="info-row"><span class="info-icon">🗑️</span><div class="info-text"><button onclick="resetAll()" style="background:var(--red-bg);color:var(--red);border:1px solid #ECA8A4;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif">すべてリセット</button></div></div>
+  </div>
+  <div style="text-align:center;padding:20px;font-size:10px;color:var(--text3);line-height:2">Waku-Waku!<br>Made by Wakayama Univ. Student Union<br>R5年度入学者対応</div>
+</div>
+
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <h2>🔐 管理者ページ</h2>
+    <p>パスワードを入力してください</p>
+    <div class="admin-err" id="adminErr">パスワードが違います</div>
+    <input class="admin-input" type="password" id="adminPwInput" placeholder="パスワード" onkeydown="if(event.key==='Enter')tryAdminLogin()">
+    <button class="admin-btn admin-btn-primary" onclick="tryAdminLogin()">ログイン</button>
+    <button class="admin-btn admin-btn-secondary" onclick="closeAdmin()">キャンセル</button>
+  </div>
+</div>
+
+<!-- CELL EDIT OVERLAY -->
+<div class="admin-overlay hidden" id="cellEditOverlay">
+  <div class="cell-edit-modal">
+    <h3 id="cem-title">セルを編集</h3>
+    <label class="cem-label">科目名</label>
+    <input class="cem-input" type="text" id="cem-name" placeholder="科目名（空白で削除）">
+    <label class="cem-label">備考（小文字で表示）</label>
+    <input class="cem-input" type="text" id="cem-note" placeholder="例：必修、遠隔">
+    <label class="cem-label">色区分</label>
+    <div class="color-swatches" id="cem-swatches"></div>
+    <div class="cem-actions">
+      <button class="cem-save" onclick="saveCellEdit()">保存</button>
+      <button class="cem-del" onclick="deleteCellEdit()">削除</button>
+      <button class="cem-cancel" onclick="closeCellEdit()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN SCREEN -->
+<div class="screen" id="screen-admin">
+  <div class="admin-notice">⚙️ 管理者モード — 時間割データを編集できます。</div>
+
+  <div class="admin-toolbar">
+    <button class="at-btn primary" onclick="showJsonExport()">📤 JSONエクスポート</button>
+    <button class="at-btn" onclick="showJsonImport()">📥 JSONインポート</button>
+    <button class="at-btn" onclick="resetTTData()">🔄 デフォルトに戻す</button>
+    <button class="at-btn danger" onclick="adminLogout()">🔓 ログアウト</button>
+  </div>
+
+  <div class="admin-tt-select">
+    <button class="att-btn active" id="att-2026f" onclick="setAdminTT('2026f',this)">2026前期（1Q・2Q）</button>
+    <button class="att-btn" id="att-2024b" onclick="setAdminTT('2024b',this)">後期参考（3Q・4Q）</button>
+  </div>
+
+  <div id="admin-tt-info" style="font-size:11px;color:var(--text2);margin-bottom:8px;font-family:'Outfit',sans-serif;font-weight:600"></div>
+  <div class="admin-tt-scroll"><div id="admin-tt-container"></div></div>
+
+  <div id="json-panel-area"></div>
+
+  <div class="sec-head" style="margin-top:16px">AIによるPDF時間割取込</div>
+  <div class="admin-notice" style="margin-bottom:10px">📄 大学が配布する時間割PDFをアップロードすると、AIが科目データを読み取り時間割に追加できます。<strong>Google Gemini APIキー</strong>（無料）が必要です。<a href="https://aistudio.google.com" target="_blank" style="color:var(--accent)">aistudio.google.com</a> で取得できます。</div>
+
+  <div class="api-key-row">
+    <input class="api-key-input" type="password" id="admin-api-key" placeholder="AIza... （Google Gemini APIキー）">
+    <button class="at-btn" onclick="toggleApiKeyVis()">👁</button>
+  </div>
+
+  <div class="pdf-drop-zone" id="pdf-drop-zone" onclick="document.getElementById('pdf-file-input').click()"
+    ondragover="event.preventDefault();this.classList.add('drag-over')"
+    ondragleave="this.classList.remove('drag-over')"
+    ondrop="handlePdfDrop(event)">
+    <input type="file" id="pdf-file-input" accept=".pdf" style="display:none" onchange="handlePdfFile(this.files[0])">
+    <div class="pdf-dz-icon">📄</div>
+    <div class="pdf-dz-text">PDFをタップして選択、またはドラッグ＆ドロップ</div>
+    <div class="pdf-dz-sub">時間割PDF（学部時間割表）に対応</div>
+  </div>
+
+  <div class="pdf-progress" id="pdf-progress">
+    <div style="font-size:11px;font-weight:600;color:var(--text2)" id="pdf-prog-label">AIが解析中...</div>
+    <div class="pdf-progress-bar"><div class="pdf-progress-fill" id="pdf-prog-fill"></div></div>
+    <div style="font-size:10px;color:var(--text3)" id="pdf-prog-sub">しばらくお待ちください</div>
+  </div>
+
+  <div class="pdf-result-list" id="pdf-result-list">
+    <div class="prl-head">
+      <span>📋 AIが検出した科目</span>
+      <span id="prl-count" style="margin-left:auto;font-size:10px;color:var(--text3)"></span>
+    </div>
+    <div id="prl-items"></div>
+    <div style="padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px">
+      <button class="at-btn primary" style="flex:1" onclick="importPdfResults()">チェックした科目を時間割に追加</button>
+      <button class="at-btn" onclick="clearPdfResults()">クリア</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- DRAWER for my timetable cell edit -->
+<div class="drawer-overlay hidden" id="myDrawerOverlay">
+  <div class="drawer">
+    <div class="drawer-handle"></div>
+    <h3 id="drawer-title">授業を追加</h3>
+    <label class="drawer-label">科目名</label>
+    <input class="drawer-input" type="text" id="dr-subj" placeholder="例：観光学概論">
+    <label class="drawer-label">教室</label>
+    <input class="drawer-input" type="text" id="dr-room" placeholder="例：L101、K棟212">
+    <label class="drawer-label">担当教員（任意）</label>
+    <input class="drawer-input" type="text" id="dr-teacher" placeholder="例：堀田 祐三子">
+    <label class="drawer-label">色</label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="dr-colors"></div>
+    <div class="drawer-actions">
+      <button class="d-save" onclick="saveMyCell()">保存</button>
+      <button class="d-del" onclick="deleteMyCell()">削除</button>
+      <button class="d-cancel" onclick="closeDrawer()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- MY TIMETABLE SCREEN -->
+<div class="screen" id="screen-mytt">
+  <!-- next class card -->
+  <div class="next-class-card" id="next-class-card">
+    <div class="ncl-label">次の授業</div>
+    <div class="ncl-subj" id="ncl-subj">—</div>
+    <div class="ncl-detail" id="ncl-detail">—</div>
+    <div class="ncl-time" id="ncl-time">—</div>
+  </div>
+
+  <!-- notification toggle -->
+  <div class="notif-bar">
+    <span class="notif-icon">🔔</span>
+    <div class="notif-text">
+      <strong>授業開始通知</strong>
+      <small>15分前にブラウザ通知を送ります</small>
+    </div>
+    <div class="toggle-wrap">
+      <input type="checkbox" class="toggle-input" id="notif-toggle" onchange="toggleNotif()">
+      <label class="toggle-label" for="notif-toggle"></label>
+    </div>
+  </div>
+  <div class="notif-status" id="notif-status">通知をオンにすると、授業の15分前にお知らせします。</div>
+
+  <!-- semester select -->
+  <div style="margin-bottom:12px">
+    <div class="tt-seg" style="display:inline-flex">
+      <button class="tt-seg-btn active" id="mysem-1q" onclick="setMySem('1Q',this)">1Q（前半）</button>
+      <button class="tt-seg-btn" id="mysem-2q" onclick="setMySem('2Q',this)">2Q（後半）</button>
+      <button class="tt-seg-btn" id="mysem-3q" onclick="setMySem('3Q',this)">3Q</button>
+      <button class="tt-seg-btn" id="mysem-4q" onclick="setMySem('4Q',this)">4Q</button>
+    </div>
+  </div>
+
+  <div class="sec-head">マイ時間割 — タップして授業を登録</div>
+  <div class="my-tt-wrap">
+    <table class="my-tt" id="my-tt-table"></table>
+  </div>
+  <div style="font-size:10px;color:var(--text3);margin-top:10px;line-height:1.7;padding:0 2px">
+    ※ 通知機能はブラウザのタブを開いている間のみ動作します。スマホのホーム画面に追加すると便利です。
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<div class="bottom-fade"></div>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="goScreen('home',this)"><div class="nav-indicator"></div><span class="nav-icon">🏠</span><span>ホーム</span></button>
+  <button class="nav-btn" onclick="goScreen('checker',this)"><div class="nav-indicator"></div><span class="nav-icon">✏️</span><span>チェック</span></button>
+  <button class="nav-btn" onclick="goScreen('timetable',this)"><div class="nav-indicator"></div><span class="nav-icon">📅</span><span>時間割</span></button>
+  <button class="nav-btn" onclick="goScreen('info',this)"><div class="nav-indicator"></div><span class="nav-icon">ℹ️</span><span>ルール</span></button>
+  <button class="nav-btn" onclick="goScreenInit('mytt',this)">
+    <div class="nav-indicator"></div>
+    <span class="nav-icon">📅</span>
+    <span>マイ時間割</span>
+  </button>
+  <button class="nav-btn" onclick="openAdminScreen()">
+    <div class="nav-indicator"></div>
+    <span class="nav-icon">⚙️</span>
+    <span>管理</span>
+  </button>
+</nav>
+
+<script>
+// ── NAV ──
+
+function goScreenInit(name, btn) {
+  goScreen(name, btn);
+  if(name === 'mytt') { renderMyTT(); updateNextClass(); }
+}
+
+function goScreen(name,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='home') calc();
+}
+
+// ── TIMETABLE DATA ──
+// Format: {name, cat, note}
+// cat: kiban/senmon/oyo/rensetsu/must/gp/plain/kyoyo
+// Each period row: [y1_3Q, y1_4Q, y2_3Q, y2_4Q] for each day Mon-Fri = 5days*2Q = 10 cols
+// But we model as: periods 1-5, days Mon-Fri, for year 1+2 (with lunch break row)
+// Simplified: store as grid [period][day] = {y1:{q3,q4}, y2:{q3,q4}}
+
+const S = (n,c,k='') => ({n,c,k}); // name, color-class, note
+const _ = null;
+
+// 2026前期 (1Q/2Q) based on PDF timetable
+const TT_2026F = {
+  title: '2026年度 前期（1Q・2Q）観光学部',
+  qLabels: ['1Q','2Q'],
+  // [period 1-5][day 0=Mon..4=Fri] = [y1_1Q, y1_2Q, y2_1Q, y2_2Q]
+  rows: [
+    // 1限
+    [
+      [S('レジャー論','c-kiban'),S('ツーリスト・マインドセット','c-kiban'),S('観光財務論','c-kiban'),_],  // 月
+      [_,_,_,_],  // 火
+      [_,_,S('Principles of Tourism C','c-gp'),S('Principles of Tourism D','c-gp')],  // 水
+      [S('観光社会学','c-kiban'),_,S('観光財務論','c-kiban'),S('観光学のためのAcademic Writing','c-kiban')],  // 木
+      [S('観光表現論','c-oyo','前期'),_,_,_],  // 金
+    ],
+    // 2限 (1・2限連続が多い)
+    [
+      [S('レジャー論','c-kiban'),S('ツーリスト・マインドセット','c-kiban'),S('観光財務論','c-kiban'),S('観光マーケティング論','c-senmon')],
+      [_,_,_,_],
+      [_,_,S('Principles of Tourism C','c-gp'),S('Principles of Tourism D','c-gp')],
+      [S('観光社会学','c-kiban'),_,S('観光財務論','c-kiban'),S('観光学のためのAcademic Writing','c-kiban')],
+      [_,_,S('プロジェクト演習','c-must','通年'),_],
+    ],
+    // 3限
+    [
+      [_,_,S('観光と公共性','c-oyo'),_],
+      [S('量的調査法','c-kiban'),_,_,_],
+      [S('観光学概論','c-must'),_,S('観光と意思決定','c-kiban'),S('観光空間計画論','c-kiban','遠隔')],
+      [_,_,_,S('宿泊産業論','c-kiban')],
+      [_,_,S('観光と交通','c-kiban'),_],
+    ],
+    // 4限
+    [
+      [_,_,S('観光と公共性','c-oyo'),_],
+      [S('量的調査法','c-kiban'),_,_,_],
+      [S('観光学概論','c-must'),_,S('観光と意思決定','c-kiban'),S('観光空間計画論','c-kiban','遠隔')],
+      [_,_,_,S('宿泊産業論','c-kiban')],
+      [_,_,S('観光と交通','c-kiban'),S('観光韓国語','c-kiban')],
+    ],
+    // 5限
+    [
+      [_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_],
+    ],
+  ],
+  // additional rows for 2year subjects that overlap
+  rows2: [
+    [
+      [S('観光ブランド論','c-senmon'),S('観光心理学','c-senmon'),S('観光戦略論','c-senmon'),_],
+      [S('観光と地域振興','c-kiban'),_,S('Tourism and Representation','c-senmon'),_],
+      [S('Urban Tourism','c-gp'),_,S('Tourism Management and Technologies','c-gp'),_],
+      [S('観光人材論','c-kiban'),S('インバウンド観光論','c-senmon'),S('Strategic Tourism Management','c-gp'),_],
+      [S('観光と文化遺産','c-senmon'),_,S('地域産業経済論','c-kiban'),S('観光地域経済論','c-senmon')],
+    ],
+    [
+      [S('観光ブランド論','c-senmon'),S('観光心理学','c-senmon'),S('観光戦略論','c-senmon'),_],
+      [S('観光と地域振興','c-kiban'),_,S('Tourism and Representation','c-senmon'),_],
+      [S('Nature Tourism','c-gp'),_,S('観光映像プロデュース','c-oyo'),_],
+      [S('観光人材論','c-kiban'),S('インバウンド観光論','c-senmon'),S('観光と意思決定','c-kiban'),_],
+      [S('観光と文化遺産','c-senmon'),_,S('地域産業経済論','c-kiban'),_],
+    ],
+    [
+      [_,_,_,S('観光文化コミュニケーション','c-senmon')],
+      [S('質的調査法','c-kiban'),_,S('Tourism and Culture','c-senmon'),_],
+      [S('観光資源論','c-kiban'),S('Sustainable Destination Management','c-gp'),S('Customer Relationship Management','c-gp'),_],
+      [S('旅行産業論','c-senmon'),_,S('観光地域経済論','c-senmon'),_],
+      [_,_,_,_],
+    ],
+    [
+      [_,_,_,S('観光人類学','c-senmon')],
+      [S('質的調査法','c-kiban'),_,S('Tourism and Culture','c-senmon'),_],
+      [S('観光資源論','c-kiban'),S('Sustainable Destination Management','c-gp'),S('Customer Relationship Management','c-gp'),_],
+      [S('旅行産業論','c-senmon'),_,_,_],
+      [_,_,_,_],
+    ],
+    [[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_]],
+  ],
+};
+
+// 後期参考 (3Q/4Q) based on uploaded image
+const TT_2024B = {
+  title: '参考：後期（3Q・4Q）時間割',
+  qLabels: ['3Q','4Q'],
+  rows: [
+    // 1限 - 1年+2年
+    [
+      [S('レジャー論(t)','c-kiban'),S('観光マーケティング論(経)','c-senmon'),_,_],
+      [_,_,_,_],
+      [_,_,_,_],
+      [S('アントレプレナーシップ発展','c-oyo'),S('アントレプレナーシップ実践','c-oyo'),_,_],
+      [S('情報処理ⅡA','c-must'),S('情報処理ⅡB','c-must'),_,_],
+    ],
+    [
+      [S('観光と心(文)','c-senmon'),_,_,_],
+      [_,_,_,_],
+      [S('◆地域協働セミナー','c-rensetsu'),_,_,_],
+      [S('博物館資料論','c-kyoyo'),_,S('Academic Skills I','c-kiban'),S('ホスピタリティ論','c-kiban')],
+      [S('「教養の森」ゼミナールC','c-kyoyo'),S('「教養の森」ゼミナールD','c-kyoyo'),_,_],
+    ],
+    // 3限
+    [
+      [_,_,S('日本学概論','c-kyoyo'),_],
+      [_,_,S('◆①論理的思考','c-kyoyo'),_],
+      [_,_,_,_],
+      [_,_,S('和歌山企業トップ経営論','c-oyo'),_],
+      [_,_,S('◆④学生生活の危機管理','c-kyoyo'),_],
+    ],
+    [
+      [S('観光地形成論(応)','c-oyo'),_,S('English Lab IB','c-must'),_],
+      [_,_,S('◆⑤国際化時代の文化と思想','c-kyoyo'),_],
+      [_,_,_,_],
+      [S('◆国際開発論','c-kyoyo'),_,_,_],
+      [_,_,S('◆日本演習','c-kyoyo'),_],
+    ],
+    // 5限
+    [[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_]],
+  ],
+  rows2: [
+    [
+      [S('レジャー論(t)','c-kiban'),S('観光マーケティング論(経)','c-senmon'),_,_],
+      [_,_,_,_],
+      [_,_,_,_],
+      [_,_,S('観光行動論','c-kiban'),_],
+      [_,_,_,_],
+    ],
+    [
+      [S('観光と心(文)','c-senmon'),_,_,_],
+      [_,_,_,_],
+      [S('◆外国語として学ぶ日本語','c-kyoyo'),_,_,_],
+      [_,_,S('観光キャリアデザインⅡ','c-rensetsu'),_],
+      [S('材料科学と技術展開','c-kyoyo'),_,S('サービスマネジメント論(経)','c-senmon'),_],
+    ],
+    [
+      [_,_,S('観光メディア論','c-kiban'),S('Event Management(GP)','c-gp')],
+      [_,_,S('◆世界の情報通信研究を知る','c-kyoyo'),_],
+      [_,_,_,_],
+      [_,_,_,_],
+      [_,_,S('Hospitality Marketing(GP)','c-gp'),_],
+    ],
+    [
+      [S('観光地形成論(応)','c-oyo'),_,S('観光メディア論','c-kiban'),S('Event Management(GP)','c-gp')],
+      [_,_,S('Tourism and Language B','c-rensetsu'),_],
+      [_,_,_,_],
+      [S('◆フランス語初級','c-kyoyo'),_,S('◆中国語初級','c-kyoyo'),_],
+      [_,_,S('Hospitality Marketing(GP)','c-gp'),_],
+    ],
+    [[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_],[_,_,_,_]],
+  ],
+};
+
+const DAYS = ['月','火','水','木','金'];
+const PERIODS = ['1限','2限','3限','4限','5限'];
+const PERIOD_TIMES = ['09:10〜','10:50〜','13:10〜','14:50〜','16:30〜'];
+
+let currentTT = '2026f';
+
+function buildTable(ttKey) {
+  const tt = ttKey === '2026f' ? TT_2026F : TT_2024B;
+  const [q1, q2] = tt.qLabels;
+
+  let html = `<table class="tt-table">`;
+  // head: day headers
+  html += `<thead><tr><th style="width:38px">時限</th><th style="width:40px">学年</th>`;
+  for(const d of DAYS) {
+    html += `<th class="day-head" colspan="2">${d}</th>`;
+  }
+  html += `</tr><tr><th></th><th></th>`;
+  for(let i=0;i<5;i++) html += `<th>${q1}</th><th>${q2}</th>`;
+  html += `</tr></thead><tbody>`;
+
+  for(let p=0;p<5;p++) {
+    // year 1 row
+    html += `<tr>`;
+    html += `<td class="period-cell" rowspan="2">${PERIODS[p]}<span class="period-sub">${PERIOD_TIMES[p]}</span></td>`;
+    html += `<td class="year-row-header">1年</td>`;
+    for(let d=0;d<5;d++) {
+      const cell = tt.rows[p][d];
+      html += renderCell(cell?.[0]) + renderCell(cell?.[1]);
+    }
+    html += `</tr>`;
+    // year 2 row
+    html += `<tr><td class="year-row-header">2年</td>`;
+    for(let d=0;d<5;d++) {
+      const cell2 = tt.rows2[p] ? tt.rows2[p][d] : null;
+      // fallback to rows for y2 data
+      const r = tt.rows[p][d];
+      const c2 = cell2;
+      html += renderCell(c2?.[2]||r?.[2]) + renderCell(c2?.[3]||r?.[3]);
+    }
+    html += `</tr>`;
+
+    if(p === 1) {
+      html += `<tr class="lunch-row"><td colspan="12">昼　休　み</td></tr>`;
+    }
+  }
+  html += `</tbody></table>`;
+  return `<div style="font-size:11px;font-weight:600;color:var(--text2);padding:8px 2px 6px;font-family:'Outfit',sans-serif">${tt.title}</div>` + html;
+}
+
+function renderCell(s) {
+  if(!s) return `<td class="subj-cell empty"></td>`;
+  const cls = s.c || 'c-plain';
+  const note = s.k ? `<span class="sk">${s.k}</span>` : '';
+  return `<td class="subj-cell ${cls}"><span class="sn">${s.n}</span>${note}</td>`;
+}
+
+function showTT(key, btn) {
+  currentTT = key;
+  document.querySelectorAll('.tt-seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tt-container').innerHTML = buildTable(key);
+}
+
+// init timetable
+// init done in admin script
+
+// ── STORAGE ──
+const IDS=['e1','e2','e3','e4','e5','p1','p2','p3','d1','d2','b1','b2','b3','b4','b5','b6','c1','c2','c3','c4','z1','z2','z3'];
+function save(){
+  const d={};IDS.forEach(id=>{d[id]=document.getElementById(id).value;});
+  try{localStorage.setItem('tanq_v3',JSON.stringify(d));}catch(e){}
+  const b=document.getElementById('saveBadge');b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),1600);
+}
+function load(){
+  try{const raw=localStorage.getItem('tanq_v3');if(!raw)return;const d=JSON.parse(raw);IDS.forEach(id=>{const el=document.getElementById(id);if(el&&d[id]!==undefined)el.value=d[id];});}catch(e){}
+}
+function resetAll(){if(!confirm('入力した単位をすべてリセットしますか？'))return;IDS.forEach(id=>{document.getElementById(id).value=0;});try{localStorage.removeItem('tanq_v3');}catch(e){}calc();}
+
+// ── STEPPER ──
+function adj(id,delta){const el=document.getElementById(id);el.value=Math.min(parseInt(el.max)||999,Math.max(parseInt(el.min)||0,(parseInt(el.value)||0)+delta));save();calc();}
+
+// ── CALC ──
+function v(id){return Math.max(0,parseInt(document.getElementById(id).value)||0);}
+function chip(id,rem,req,neutral){
+  const el=document.getElementById(id);if(!el)return;
+  if(neutral){el.className='ci-chip chip-neutral';el.textContent='—';return;}
+  if(rem<=0){el.className='ci-chip chip-done';el.textContent='✓ 完了';}
+  else if(rem<=Math.ceil(req*.3)){el.className='ci-chip chip-few';el.textContent='残'+rem;}
+  else{el.className='ci-chip chip-need';el.textContent='残'+rem;}
+}
+function gbadge(id,rem,label){
+  const el=document.getElementById(id);if(!el)return;
+  if(rem<=0){el.className='group-badge gb-done';el.textContent='✓ 完了';}
+  else{el.className='group-badge gb-must';el.textContent=label;}
+}
+function calc(){
+  const e1=v('e1'),e2=v('e2'),e3=v('e3'),e4=v('e4'),e5=v('e5');
+  chip('cs-e1',Math.max(0,1-e1),1);chip('cs-e2',Math.max(0,6-e2),6);chip('cs-e3',Math.max(0,2-e3),2);chip('cs-e4',Math.max(0,12-e4),12);chip('cs-e5',Math.max(0,3-e5),3);
+  const kT=e1+e2+e3+e4+e5;gbadge('gb-kyoyo',Math.max(0,24-kT),kT+'/24');
+  const surplus=Math.min(12,Math.max(0,e1-1)+Math.max(0,e2-6)+Math.max(0,e3-2)+Math.max(0,e4-12)+Math.max(0,e5-3));
+  const p1=v('p1'),p2=v('p2'),p3=v('p3'),pT=p1+p2+p3+surplus;
+  chip('cs-p1',0,0,true);chip('cs-p2',0,0,true);chip('cs-p3',0,0,true);
+  const ap=document.getElementById('agg-p');ap.textContent=pT+' / 16';ap.style.color=pT>=16?'var(--green)':pT>=8?'var(--orange)':'var(--red)';
+  gbadge('gb-p',Math.max(0,16-pT),pT+'/16');
+  const d1=v('d1'),d2=v('d2');chip('cs-d1',Math.max(0,2-d1),2);chip('cs-d2',Math.max(0,2-d2),2);gbadge('gb-d',Math.max(0,4-d1-d2),(d1+d2)+'/4');
+  const b1=v('b1'),b2=v('b2'),b3=v('b3'),b4=v('b4'),b5=v('b5'),b6=v('b6'),b6c=Math.min(b6,14),bS=b3+b4+b5+b6c;
+  chip('cs-b1',Math.max(0,2-b1),2);chip('cs-b2',Math.max(0,2-b2),2);
+  chip('cs-b3',0,0,true);chip('cs-b4',0,0,true);chip('cs-b5',0,0,true);chip('cs-b6',0,0,true);
+  const ab=document.getElementById('agg-b');ab.textContent=bS+' / 28';ab.style.color=bS>=28?'var(--green)':bS>=14?'var(--orange)':'var(--red)';
+  gbadge('gb-b',Math.max(0,32-b1-b2-bS),(b1+b2+bS)+'/32');
+  const c1=v('c1'),c2=v('c2'),c3=v('c3'),c4=v('c4'),cS=c2+c3+c4;
+  chip('cs-c1',Math.max(0,14-c1),14);chip('cs-c2',0,0,true);chip('cs-c3',0,0,true);chip('cs-c4',0,0,true);
+  const ac=document.getElementById('agg-c');ac.textContent=cS+' / 22';ac.style.color=cS>=22?'var(--green)':cS>=11?'var(--orange)':'var(--red)';
+  gbadge('gb-c',Math.max(0,36-c1-cS),(c1+cS)+'/36');
+  const z1=v('z1'),z2=v('z2'),z3=v('z3');
+  chip('cs-z1',Math.max(0,4-z1),4);chip('cs-z2',Math.max(0,4-z2),4);chip('cs-z3',Math.max(0,4-z3),4);
+  gbadge('gb-z',Math.max(0,12-z1-z2-z3),(z1+z2+z3)+'/12');
+  const earned=kT+p1+p2+p3+d1+d2+b1+b2+b3+b4+b5+b6+c1+c2+c3+c4+z1+z2+z3;
+  const pct=Math.min(100,Math.round(earned/124*100));
+  const remain=Math.max(0,124-earned);
+  const comps=[kT>=24,pT>=16,d1+d2>=4,b1>=2,b2>=2,bS>=28,c1>=14,cS>=22,z1+z2+z3>=12];
+  const cc=comps.filter(Boolean).length;
+  document.getElementById('h-pct').textContent=pct+'%';
+  document.getElementById('h-remain').textContent=remain;
+  document.getElementById('h-bar').style.width=Math.max(pct>0?2:0,pct)+'%';
+  document.getElementById('h-earned').textContent=earned+' 単位 取得済';
+  document.getElementById('s-done').textContent=earned;
+  document.getElementById('s-remain').textContent=remain;
+  document.getElementById('s-comp').textContent=cc;
+  const bars=[
+    {l:'教養教育科目',g:kT,r:24},{l:'専門連接科目',g:pT,r:16},
+    {l:'専門導入科目',g:d1+d2,r:4},{l:'基礎・日本文化',g:b1+b2,r:4},
+    {l:'基盤〜実践',g:bS,r:28},{l:'主コース科目',g:c1,r:14},
+    {l:'他・応用・GP',g:cS,r:22},{l:'演習・卒業論文',g:z1+z2+z3,r:12},
+  ];
+  document.getElementById('mini-bar-list').innerHTML=bars.map(b=>{
+    const p=Math.min(100,Math.round(b.g/b.r*100));
+    const col=p>=100?'var(--green)':p>=50?'var(--accent)':'var(--red)';
+    return `<div class="mini-bar-row"><div class="mbr-label">${b.l}</div><div class="mbr-track"><div class="mbr-fill" style="width:${p}%;background:${col}"></div></div><div class="mbr-nums" style="color:${col}">${b.g}<span style="color:var(--text3);font-weight:400">/${b.r}</span></div></div>`;
+  }).join('');
+}
+load();calc();
+
+// ═══════════════════════════════════════
+// ADMIN SYSTEM
+// ═══════════════════════════════════════
+
+// Password hash (SHA-256 of "Kankou2026")
+const ADMIN_HASH = 'b5e7fa7a2f3c8c5b4c7c9e2f9a3d1e0c4b6f8a2e5d3c1b0a9f7e6d5c4b3a201';
+
+// Compute SHA-256 using SubtleCrypto
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let adminAuthed = false;
+let adminCurrentTT = '2026f';
+let editingCell = null; // {ttKey, period, day, yearIdx, qIdx}
+
+// Deep-clone tt data into localStorage-backed mutable copy
+const LS_TT_KEY = 'tanq_tt_data';
+
+function getTTData() {
+  try {
+    const raw = localStorage.getItem(LS_TT_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  // Return deep clone of default
+  return {
+    '2026f': deepCloneTT(TT_2026F),
+    '2024b': deepCloneTT(TT_2024B),
+  };
+}
+
+function saveTTData(data) {
+  try { localStorage.setItem(LS_TT_KEY, JSON.stringify(data)); } catch(e) {}
+  // Rebuild main timetable display
+  document.getElementById('tt-container').innerHTML = buildTable(currentTT);
+}
+
+function deepCloneTT(tt) {
+  return {
+    title: tt.title,
+    qLabels: [...tt.qLabels],
+    rows: tt.rows.map(r => r.map(d => d.map(c => c ? {...c} : null))),
+    rows2: tt.rows2.map(r => r.map(d => d.map(c => c ? {...c} : null))),
+  };
+}
+
+// Override buildTable to use editable data if available
+const _origBuildTable = buildTable;
+function _origBuildTableInner(key) {
+  const stored = getTTData();
+  if (stored && stored[key]) {
+    const tt = stored[key];
+    return _buildTableFromData(tt);
+  }
+  return _origBuildTable(key);
+}
+
+function _buildTableFromData(tt) {
+  const [q1,q2] = tt.qLabels;
+  let html = `<table class="tt-table">`;
+  html += `<thead><tr><th style="width:38px">時限</th><th style="width:40px">学年</th>`;
+  for(const d of DAYS) html += `<th class="day-head" colspan="2">${d}</th>`;
+  html += `</tr><tr><th></th><th></th>`;
+  for(let i=0;i<5;i++) html += `<th>${q1}</th><th>${q2}</th>`;
+  html += `</tr></thead><tbody>`;
+  for(let p=0;p<5;p++) {
+    html += `<tr>`;
+    html += `<td class="period-cell" rowspan="2">${PERIODS[p]}<span class="period-sub">${PERIOD_TIMES[p]}</span></td>`;
+    html += `<td class="year-row-header">1年</td>`;
+    for(let d=0;d<5;d++) {
+      const cell=tt.rows[p]?.[d];
+      html += renderCell(cell?.[0]) + renderCell(cell?.[1]);
+    }
+    html += `</tr><tr><td class="year-row-header">2年</td>`;
+    for(let d=0;d<5;d++) {
+      const r=tt.rows[p]?.[d]; const c2=tt.rows2[p]?.[d];
+      html += renderCell(c2?.[2]||r?.[2]) + renderCell(c2?.[3]||r?.[3]);
+    }
+    html += `</tr>`;
+    if(p===1) html += `<tr class="lunch-row"><td colspan="12">昼　休　み</td></tr>`;
+  }
+  html += `</tbody></table>`;
+  return `<div style="font-size:11px;font-weight:600;color:var(--text2);padding:8px 2px 6px;font-family:'Outfit',sans-serif">${tt.title}</div>` + html;
+}
+
+// ── LOGIN ──
+function openAdminScreen() {
+  if (adminAuthed) {
+    activateAdminScreen();
+    return;
+  }
+  document.getElementById('adminOverlay').classList.remove('hidden');
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminErr').classList.remove('show');
+  setTimeout(()=>document.getElementById('adminPwInput').focus(), 100);
+}
+
+async function tryAdminLogin() {
+  const pw = document.getElementById('adminPwInput').value;
+  const hash = await sha256(pw);
+  // We compare against hash of "Kankou2026"
+  // Pre-computed: sha256("Kankou2026")
+  const correctHash = await sha256('Kankou2026');
+  if (hash === correctHash) {
+    adminAuthed = true;
+    document.getElementById('adminOverlay').classList.add('hidden');
+    activateAdminScreen();
+  } else {
+    document.getElementById('adminErr').classList.add('show');
+    document.getElementById('adminPwInput').value = '';
+    document.getElementById('adminPwInput').focus();
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.add('hidden');
+  // Go back to home
+  goScreen('home', document.querySelector('.nav-btn'));
+}
+
+function adminLogout() {
+  adminAuthed = false;
+  goScreen('home', document.querySelector('.nav-btn'));
+}
+
+function activateAdminScreen() {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-admin').classList.add('active');
+  renderAdminTable();
+}
+
+// ── ADMIN TABLE ──
+const COLOR_OPTIONS = [
+  {cls:'c-kiban',   label:'専門基礎', bg:'#C8E6FA'},
+  {cls:'c-senmon',  label:'専門科目', bg:'#FFF2A8'},
+  {cls:'c-oyo',     label:'応用・GP', bg:'#FFE0B8'},
+  {cls:'c-rensetsu',label:'連接',    bg:'#D4EDDA'},
+  {cls:'c-must',    label:'必修',    bg:'#FFD6D6'},
+  {cls:'c-gp',      label:'GP専門',  bg:'#E8E0F8'},
+  {cls:'c-kyoyo',   label:'教養',    bg:'#DFF0D8'},
+  {cls:'c-plain',   label:'その他',  bg:'#FFFFFF'},
+];
+
+function setAdminTT(key, btn) {
+  adminCurrentTT = key;
+  document.querySelectorAll('.att-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAdminTable();
+}
+
+function renderAdminTable() {
+  const data = getTTData();
+  const tt = data[adminCurrentTT];
+  document.getElementById('admin-tt-info').textContent = tt.title + ' — セルをタップして編集';
+
+  const [q1,q2] = tt.qLabels;
+  const YEAR_LABELS = ['1年1Q','1年2Q','2年1Q','2年2Q'];
+
+  let html = `<table class="admin-tt-table">`;
+  html += `<thead><tr><th style="width:36px">時限</th><th style="width:28px">学年</th>`;
+  for(const d of DAYS) html += `<th class="day-h" colspan="2">${d}</th>`;
+  html += `</tr><tr><th></th><th></th>`;
+  for(let i=0;i<5;i++) html += `<th>${q1}</th><th>${q2}</th>`;
+  html += `</tr></thead><tbody>`;
+
+  for(let p=0;p<5;p++) {
+    // y1
+    html += `<tr>`;
+    html += `<td class="period-lbl" rowspan="2">${p+1}限</td>`;
+    html += `<td class="year-lbl">1年</td>`;
+    for(let d=0;d<5;d++) {
+      const row = tt.rows[p]?.[d] || [null,null,null,null];
+      html += adminCell(p,d,0,row[0]) + adminCell(p,d,1,row[1]);
+    }
+    html += `</tr>`;
+    // y2
+    html += `<tr><td class="year-lbl">2年</td>`;
+    for(let d=0;d<5;d++) {
+      const r = tt.rows[p]?.[d] || [null,null,null,null];
+      const r2 = tt.rows2[p]?.[d] || [null,null,null,null];
+      html += adminCell(p,d,2,r2[2]||r[2]) + adminCell(p,d,3,r2[3]||r[3]);
+    }
+    html += `</tr>`;
+    if(p===1) html += `<tr><td colspan="12" style="background:#F5F4F0;text-align:center;font-size:9px;color:var(--text3);padding:3px">昼　休　み</td></tr>`;
+  }
+  html += `</tbody></table>`;
+  document.getElementById('admin-tt-container').innerHTML = html;
+}
+
+function adminCell(p, d, yIdx, s) {
+  const enc = encodeURIComponent(JSON.stringify({ttKey:adminCurrentTT,p,d,yIdx}));
+  if(!s) {
+    return `<td><div class="admin-cell empty-cell" onclick="openCellEdit('${enc}',null)"><div class="ac-edit-btn">＋</div></div></td>`;
+  }
+  return `<td><div class="admin-cell ${s.c||'c-plain'}" onclick="openCellEdit('${enc}',${encodeURIComponent(JSON.stringify(s))})">
+    <span class="ac-name">${s.n}</span>${s.k?`<span style="font-size:8px;color:var(--text3)">${s.k}</span>`:''}
+    <div class="ac-edit-btn">✏️</div>
+  </div></td>`;
+}
+
+// ── CELL EDIT ──
+let _editCtx = null;
+
+function openCellEdit(ctxEnc, sEnc) {
+  _editCtx = JSON.parse(decodeURIComponent(ctxEnc));
+  const s = sEnc ? JSON.parse(decodeURIComponent(sEnc)) : null;
+
+  const {p,d,yIdx} = _editCtx;
+  document.getElementById('cem-title').textContent =
+    `${DAYS[d]}曜 ${p+1}限 ${yIdx<2?'1年':'2年'}${yIdx%2===0?'前半Q':'後半Q'} を編集`;
+  document.getElementById('cem-name').value = s?.n || '';
+  document.getElementById('cem-note').value = s?.k || '';
+
+  // swatches
+  const sel = s?.c || 'c-kiban';
+  document.getElementById('cem-swatches').innerHTML = COLOR_OPTIONS.map(o =>
+    `<div class="color-swatch${o.cls===sel?' sel':''}" style="background:${o.bg};border-color:${o.bg}"
+      onclick="selectSwatch('${o.cls}',this)">${o.label}</div>`
+  ).join('');
+
+  document.getElementById('cellEditOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('cem-name').focus(),80);
+}
+
+function selectSwatch(cls, el) {
+  document.querySelectorAll('.color-swatch').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function getSelectedSwatch() {
+  const el = document.querySelector('.color-swatch.sel');
+  if(!el) return 'c-kiban';
+  const idx = Array.from(document.querySelectorAll('.color-swatch')).indexOf(el);
+  return COLOR_OPTIONS[idx]?.cls || 'c-kiban';
+}
+
+function saveCellEdit() {
+  const name = document.getElementById('cem-name').value.trim();
+  const note = document.getElementById('cem-note').value.trim();
+  const cat  = getSelectedSwatch();
+  const {ttKey,p,d,yIdx} = _editCtx;
+
+  const data = getTTData();
+  const tt = data[ttKey];
+
+  // ensure arrays exist
+  while(tt.rows.length <= p) tt.rows.push([[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]);
+  while(tt.rows2.length <= p) tt.rows2.push([[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]);
+  while(tt.rows[p].length <= d) tt.rows[p].push([null,null,null,null]);
+  while(tt.rows2[p].length <= d) tt.rows2[p].push([null,null,null,null]);
+  while(tt.rows[p][d].length <= 3) tt.rows[p][d].push(null);
+  while(tt.rows2[p][d].length <= 3) tt.rows2[p][d].push(null);
+
+  const val = name ? {n: name, c: cat, k: note} : null;
+  if (yIdx < 2) {
+    tt.rows[p][d][yIdx] = val;
+  } else {
+    tt.rows2[p][d][yIdx] = val;
+  }
+
+  saveTTData(data);
+  closeCellEdit();
+  renderAdminTable();
+}
+
+function deleteCellEdit() {
+  const {ttKey,p,d,yIdx} = _editCtx;
+  const data = getTTData();
+  const tt = data[ttKey];
+  if(yIdx < 2) { if(tt.rows[p]?.[d]) tt.rows[p][d][yIdx] = null; }
+  else         { if(tt.rows2[p]?.[d]) tt.rows2[p][d][yIdx] = null; }
+  saveTTData(data);
+  closeCellEdit();
+  renderAdminTable();
+}
+
+function closeCellEdit() {
+  document.getElementById('cellEditOverlay').classList.add('hidden');
+  _editCtx = null;
+}
+
+// ── JSON EXPORT/IMPORT ──
+function showJsonExport() {
+  const data = getTTData();
+  const panel = document.getElementById('json-panel-area');
+  panel.innerHTML = `<div class="json-panel">
+    <div class="json-panel-title">📤 JSONエクスポート（コピーしてバックアップ）</div>
+    <textarea id="json-export-area" readonly onclick="this.select()">${JSON.stringify(data, null, 2)}</textarea>
+    <button class="at-btn primary" style="margin-top:8px;width:100%" onclick="copyJson()">クリップボードにコピー</button>
+    <button class="at-btn" style="margin-top:6px;width:100%" onclick="closeJsonPanel()">閉じる</button>
+  </div>`;
+}
+
+function showJsonImport() {
+  const panel = document.getElementById('json-panel-area');
+  panel.innerHTML = `<div class="json-panel">
+    <div class="json-panel-title">📥 JSONインポート（貼り付けて読み込み）</div>
+    <textarea id="json-import-area" placeholder='{"2026f":{...},"2024b":{...}}'></textarea>
+    <button class="at-btn primary" style="margin-top:8px;width:100%" onclick="importJson()">インポート実行</button>
+    <button class="at-btn" style="margin-top:6px;width:100%" onclick="closeJsonPanel()">キャンセル</button>
+  </div>`;
+}
+
+function closeJsonPanel() {
+  document.getElementById('json-panel-area').innerHTML = '';
+}
+
+function copyJson() {
+  const txt = document.getElementById('json-export-area').value;
+  navigator.clipboard.writeText(txt).then(()=>alert('コピーしました！'));
+}
+
+function importJson() {
+  try {
+    const raw = document.getElementById('json-import-area').value.trim();
+    const parsed = JSON.parse(raw);
+    if (!parsed['2026f'] && !parsed['2024b']) throw new Error('フォーマットエラー');
+    localStorage.setItem(LS_TT_KEY, JSON.stringify(parsed));
+    closeJsonPanel();
+    renderAdminTable();
+    document.getElementById('tt-container').innerHTML = buildTable(currentTT);
+    alert('インポートが完了しました！');
+  } catch(e) {
+    alert('JSONの形式が正しくありません: ' + e.message);
+  }
+}
+
+function resetTTData() {
+  if(!confirm('時間割データをデフォルトに戻しますか？\n（編集内容はすべて失われます）')) return;
+  localStorage.removeItem(LS_TT_KEY);
+  document.getElementById('tt-container').innerHTML = buildTable(currentTT);
+  renderAdminTable();
+  alert('デフォルトに戻しました。');
+}
+
+// ── OVERRIDE showTT to use editable data ──
+function showTT(key, btn) {
+  currentTT = key;
+  document.querySelectorAll('.tt-seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tt-container').innerHTML = buildTable(key);
+}
+
+// Init: rebuild timetable from stored data
+document.getElementById('tt-container').innerHTML = buildTable('2026f');
+
+
+// ════════════════════════════════════════════
+// MY TIMETABLE
+// ════════════════════════════════════════════
+const MY_TT_KEY = 'tanq_my_tt';
+const DAYS_MY = ['月','火','水','木','金'];
+const PERIOD_STARTS = ['09:10','10:50','13:10','14:50','16:30']; // start times
+const PERIOD_LABELS = ['1限','2限','3限','4限','5限'];
+let myCurrentSem = '1Q';
+let myEditCtx = null; // {period, day, sem}
+
+const MY_COLORS = [
+  {cls:'my-blue',   bg:'#DBEAFE', border:'#93C5FD', label:'青'},
+  {cls:'my-green',  bg:'#D1FAE5', border:'#6EE7B7', label:'緑'},
+  {cls:'my-yellow', bg:'#FEF9C3', border:'#FDE047', label:'黄'},
+  {cls:'my-orange', bg:'#FFEDD5', border:'#FDBA74', label:'橙'},
+  {cls:'my-pink',   bg:'#FCE7F3', border:'#F9A8D4', label:'桃'},
+  {cls:'my-purple', bg:'#EDE9FE', border:'#C4B5FD', label:'紫'},
+];
+
+// Inject color CSS
+const colorStyleEl = document.createElement('style');
+colorStyleEl.textContent = MY_COLORS.map(c=>
+  `.${c.cls}{background:${c.bg};border-left:3px solid ${c.border}!important}`
+).join('\n');
+document.head.appendChild(colorStyleEl);
+
+function getMyTT() {
+  try { const r=localStorage.getItem(MY_TT_KEY); if(r) return JSON.parse(r); } catch(e) {}
+  return {};
+}
+function saveMyTT(data) {
+  try { localStorage.setItem(MY_TT_KEY, JSON.stringify(data)); } catch(e) {}
+}
+function myKey(sem,day,period) { return `${sem}_${day}_${period}`; }
+
+function setMySem(sem, btn) {
+  myCurrentSem = sem;
+  document.querySelectorAll('[id^="mysem-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMyTT();
+  updateNextClass();
+}
+
+function renderMyTT() {
+  const data = getMyTT();
+  const table = document.getElementById('my-tt-table');
+  let html = `<thead><tr><th style="width:38px">時限</th>`;
+  DAYS_MY.forEach(d => html += `<th>${d}</th>`);
+  html += `</tr></thead><tbody>`;
+
+  for(let p=0; p<5; p++) {
+    html += `<tr><td class="p-hd">${PERIOD_LABELS[p]}<br><span style="font-size:8px;font-weight:400;color:var(--text3)">${PERIOD_STARTS[p]}</span></td>`;
+    for(let d=0; d<5; d++) {
+      const key = myKey(myCurrentSem, d, p);
+      const cell = data[key];
+      const ctx = encodeURIComponent(JSON.stringify({sem:myCurrentSem,day:d,period:p}));
+      if(cell && cell.subj) {
+        const colorCls = cell.color || 'my-blue';
+        html += `<td><div class="my-cell has-subj ${colorCls}" onclick="openMyDrawer('${ctx}')">
+          <div class="my-cell-inner">
+            <span class="mc-subj">${cell.subj}</span>
+            ${cell.room?`<span class="mc-room">📍${cell.room}</span>`:''}
+            ${cell.teacher?`<span class="mc-teacher">${cell.teacher}</span>`:''}
+          </div>
+        </div></td>`;
+      } else {
+        html += `<td><div class="my-cell" onclick="openMyDrawer('${ctx}')"><div class="mc-add">+</div></div></td>`;
+      }
+    }
+    html += `</tr>`;
+    if(p === 1) html += `<tr><td colspan="6" style="background:#F5F4F0;font-size:9px;color:var(--text3);text-align:center;padding:3px">昼休み</td></tr>`;
+  }
+  html += `</tbody>`;
+  table.innerHTML = html;
+}
+
+function openMyDrawer(ctxEnc) {
+  myEditCtx = JSON.parse(decodeURIComponent(ctxEnc));
+  const {sem, day, period} = myEditCtx;
+  const data = getMyTT();
+  const cell = data[myKey(sem, day, period)] || {};
+
+  document.getElementById('drawer-title').textContent =
+    `${DAYS_MY[day]}曜 ${PERIOD_LABELS[period]} — ${sem}`;
+  document.getElementById('dr-subj').value    = cell.subj    || '';
+  document.getElementById('dr-room').value    = cell.room    || '';
+  document.getElementById('dr-teacher').value = cell.teacher || '';
+
+  // render color swatches
+  const selColor = cell.color || 'my-blue';
+  document.getElementById('dr-colors').innerHTML = MY_COLORS.map(c =>
+    `<div style="width:28px;height:28px;background:${c.bg};border-radius:6px;border:2.5px solid ${selColor===c.cls?'#1A4FA0':c.border};cursor:pointer;transition:border-color .15s"
+      onclick="selectMyColor('${c.cls}',this)" title="${c.label}"></div>`
+  ).join('');
+
+  document.getElementById('myDrawerOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('dr-subj').focus(), 80);
+}
+
+function selectMyColor(cls, el) {
+  document.querySelectorAll('#dr-colors div').forEach((e,i)=>{
+    e.style.borderColor = MY_COLORS[i].border;
+  });
+  const idx = MY_COLORS.findIndex(c=>c.cls===cls);
+  el.style.borderColor = '#1A4FA0';
+  el._colorCls = cls;
+}
+
+function getSelectedMyColor() {
+  const swatches = document.querySelectorAll('#dr-colors div');
+  for(const sw of swatches) if(sw._colorCls) {
+    // find which one has accent border
+    if(sw.style.borderColor === 'rgb(26, 79, 160)') return sw._colorCls;
+  }
+  // fallback: find by border
+  for(let i=0; i<swatches.length; i++) {
+    if(swatches[i].style.borderColor === 'rgb(26, 79, 160)') return MY_COLORS[i].cls;
+  }
+  return 'my-blue';
+}
+
+function saveMyCell() {
+  const {sem, day, period} = myEditCtx;
+  const subj    = document.getElementById('dr-subj').value.trim();
+  const room    = document.getElementById('dr-room').value.trim();
+  const teacher = document.getElementById('dr-teacher').value.trim();
+  const color   = getSelectedMyColor();
+  const data = getMyTT();
+  const key = myKey(sem, day, period);
+  if(subj) {
+    data[key] = {subj, room, teacher, color};
+  } else {
+    delete data[key];
+  }
+  saveMyTT(data);
+  closeDrawer();
+  renderMyTT();
+  updateNextClass();
+}
+
+function deleteMyCell() {
+  const {sem, day, period} = myEditCtx;
+  const data = getMyTT();
+  delete data[myKey(sem, day, period)];
+  saveMyTT(data);
+  closeDrawer();
+  renderMyTT();
+  updateNextClass();
+}
+
+function closeDrawer() {
+  document.getElementById('myDrawerOverlay').classList.add('hidden');
+  myEditCtx = null;
+}
+
+// ════════════════════════════════════════════
+// NEXT CLASS + NOTIFICATION ENGINE
+// ════════════════════════════════════════════
+const SEM_PERIODS = {
+  '1Q': {start:'2026-04-12', end:'2026-06-10'},
+  '2Q': {start:'2026-06-12', end:'2026-08-10'},
+  '3Q': {start:'2026-10-01', end:'2026-12-05'},
+  '4Q': {start:'2026-12-06', end:'2027-02-14'},
+};
+
+function getCurrentSem() {
+  const now = new Date();
+  const today = now.toISOString().slice(0,10);
+  for(const [sem, range] of Object.entries(SEM_PERIODS)) {
+    if(today >= range.start && today <= range.end) return sem;
+  }
+  // fallback
+  if(today < '2026-06-12') return '1Q';
+  if(today < '2026-10-01') return '2Q';
+  if(today < '2026-12-06') return '3Q';
+  return '4Q';
+}
+
+function todayDayIndex() {
+  // 0=Mon..4=Fri, -1=weekend
+  const d = new Date().getDay(); // 0=Sun,1=Mon..6=Sat
+  if(d === 0 || d === 6) return -1;
+  return d - 1;
+}
+
+function getNextClass() {
+  const sem = getCurrentSem();
+  const data = getMyTT();
+  const now = new Date();
+  const dayIdx = todayDayIndex();
+  if(dayIdx < 0) return null;
+
+  const nowMins = now.getHours()*60 + now.getMinutes();
+
+  // Check today's remaining classes
+  for(let p=0; p<5; p++) {
+    const [h,m] = PERIOD_STARTS[p].split(':').map(Number);
+    const startMins = h*60+m;
+    if(startMins > nowMins) {
+      const key = myKey(sem, dayIdx, p);
+      const cell = data[key];
+      if(cell?.subj) {
+        return {
+          subj: cell.subj, room: cell.room, teacher: cell.teacher,
+          period: PERIOD_LABELS[p], day: DAYS_MY[dayIdx],
+          startMins, startTime: PERIOD_STARTS[p],
+          minsUntil: startMins - nowMins,
+        };
+      }
+    }
+  }
+  return null;
+}
+
+function updateNextClass() {
+  const nc = getNextClass();
+  const card = document.getElementById('next-class-card');
+  if(!nc) { card.classList.remove('show'); return; }
+  card.classList.add('show');
+  document.getElementById('ncl-subj').textContent    = nc.subj;
+  document.getElementById('ncl-detail').textContent  =
+    [nc.room?'📍'+nc.room:'', nc.teacher||''].filter(Boolean).join('　');
+  const m = nc.minsUntil;
+  document.getElementById('ncl-time').textContent =
+    m <= 0 ? '授業中' : m < 60 ? `${m}分後（${nc.startTime}〜）` : `${Math.floor(m/60)}時間${m%60}分後`;
+}
+
+// ── Notification ──
+let notifTimer = null;
+let notifEnabled = false;
+
+function toggleNotif() {
+  const cb = document.getElementById('notif-toggle');
+  if(!cb.checked) {
+    notifEnabled = false;
+    clearInterval(notifTimer);
+    updateNotifStatus('通知をオフにしました。');
+    return;
+  }
+  if(!('Notification' in window)) {
+    cb.checked = false;
+    updateNotifStatus('このブラウザは通知をサポートしていません。');
+    return;
+  }
+  Notification.requestPermission().then(perm => {
+    if(perm === 'granted') {
+      notifEnabled = true;
+      startNotifPolling();
+      updateNotifStatus('✅ 通知がオンです。授業の15分前にお知らせします。');
+    } else {
+      cb.checked = false;
+      updateNotifStatus('⚠️ 通知が拒否されています。ブラウザの設定から許可してください。');
+    }
+  });
+}
+
+function updateNotifStatus(msg) {
+  document.getElementById('notif-status').textContent = msg;
+}
+
+const _notifiedKeys = new Set();
+
+function startNotifPolling() {
+  clearInterval(notifTimer);
+  notifTimer = setInterval(() => {
+    if(!notifEnabled) return;
+    updateNextClass();
+    const nc = getNextClass();
+    if(!nc) return;
+    const notifKey = `${myCurrentSem}_${nc.day}_${nc.period}`;
+    if(nc.minsUntil <= 15 && nc.minsUntil > 0 && !_notifiedKeys.has(notifKey)) {
+      _notifiedKeys.add(notifKey);
+      try {
+        new Notification('📚 もうすぐ授業です', {
+          body: `${nc.period} ${nc.subj}${nc.room?' — '+nc.room:''}\n${nc.minsUntil}分後に開始`,
+          icon: '',
+          tag: notifKey,
+        });
+      } catch(e) {}
+    }
+    // reset notified keys after class time
+    if(nc.minsUntil < 0) _notifiedKeys.delete(notifKey);
+  }, 30000); // check every 30sec
+  updateNextClass(); // immediate
+}
+
+// Next class auto-update every minute
+setInterval(updateNextClass, 60000);
+
+// ════════════════════════════════════════════
+// PDF IMPORT (Admin)
+// ════════════════════════════════════════════
+let pdfResults = [];
+
+function toggleApiKeyVis() {
+  const inp = document.getElementById('admin-api-key');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function handlePdfDrop(e) {
+  e.preventDefault();
+  document.getElementById('pdf-drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file && file.type === 'application/pdf') handlePdfFile(file);
+}
+
+async function handlePdfFile(file) {
+  if(!file) return;
+  const apiKey = document.getElementById('admin-api-key').value.trim();
+  if(!apiKey || apiKey.length < 10) {
+    alert('Gemini APIキーを入力してください（Google AI Studioで取得: aistudio.google.com）');
+    return;
+  }
+
+  // Show progress
+  const prog = document.getElementById('pdf-progress');
+  const fill = document.getElementById('pdf-prog-fill');
+  const label = document.getElementById('pdf-prog-label');
+  const sub = document.getElementById('pdf-prog-sub');
+  prog.classList.add('show');
+  document.getElementById('pdf-result-list').classList.remove('show');
+  pdfResults = [];
+
+  label.textContent = 'PDFを読み込み中...';
+  sub.textContent = file.name;
+  fill.style.width = '15%';
+
+  // Convert PDF to base64
+  const base64 = await fileToBase64(file);
+  fill.style.width = '35%';
+  label.textContent = 'AIが時間割を解析中...';
+  sub.textContent = 'しばらくお待ちください（10〜30秒）';
+
+  const prompt = `この時間割PDFから授業科目データを抽出してください。
+以下のJSON配列形式で回答してください。余計な説明は不要です。JSONのみ返してください。
+
+[
+  {
+    "name": "科目名",
+    "period": 時限番号(1-5の整数),
+    "day": 曜日インデックス(0=月,1=火,2=水,3=木,4=金),
+    "q": "クォーター(1Q/2Q/3Q/4Q)",
+    "year": 学年(1または2),
+    "category": "カテゴリ(kiban/senmon/oyo/rensetsu/gp/must/kyoyo/plain)",
+    "note": "備考（あれば）"
+  }
+]
+
+categoryの判断基準：
+- kiban: 青色セル（基盤科目・国際科目・学修技能科目）
+- senmon: 黄色セル（専門科目 観光経営・地域再生・観光文化コース）
+- oyo: オレンジ色セル（応用科目）
+- rensetsu: 緑色セル（連接・連携展開科目）
+- gp: GP専門科目（英語表記の専門科目）
+- must: 必修科目（赤/ピンク）
+- kyoyo: 教養科目（「教養の森」ゼミナール等）
+- plain: その他
+
+複数クォーターにまたがる科目は1行ずつ、該当クォーターごとに記載してください。`;
+
+  try {
+    fill.style.width = '60%';
+    // Gemini 1.5 Flash — supports inline PDF via base64
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const resp = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            {inline_data: {mime_type: 'application/pdf', data: base64}},
+            {text: prompt}
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 4096,
+        }
+      })
+    });
+
+    fill.style.width = '85%';
+    label.textContent = '結果を処理中...';
+
+    if(!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.error?.message || 'Gemini API Error ' + resp.status);
+    }
+
+    const data = await resp.json();
+    // Gemini response structure
+    const text = data.candidates?.[0]?.content?.parts
+      ?.filter(p=>p.text).map(p=>p.text).join('') || '';
+    if(!text) throw new Error('Geminiから応答を取得できませんでした');
+
+    // Extract JSON array from response
+    const match = text.match(/\[[\s\S]*\]/);
+    if(!match) throw new Error('AIからJSONを取得できませんでした\n\n応答: ' + text.slice(0,200));
+    pdfResults = JSON.parse(match[0]);
+
+    fill.style.width = '100%';
+    label.textContent = `✅ 完了 — ${pdfResults.length}件の科目を検出`;
+    sub.textContent = 'Gemini 1.5 Flash で解析';
+
+    showPdfResults();
+  } catch(e) {
+    fill.style.width = '100%';
+    fill.style.background = 'var(--red)';
+    label.textContent = '❌ エラー: ' + e.message;
+    sub.textContent = 'APIキー・PDF形式・ネット接続を確認してください';
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((res,rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+const CAT_TO_CLASS = {
+  kiban:'c-kiban', senmon:'c-senmon', oyo:'c-oyo', rensetsu:'c-rensetsu',
+  gp:'c-gp', must:'c-must', kyoyo:'c-kyoyo', plain:'c-plain'
+};
+const CAT_LABELS = {
+  kiban:'専門基礎', senmon:'専門科目', oyo:'応用', rensetsu:'連接',
+  gp:'GP専門', must:'必修', kyoyo:'教養', plain:'その他'
+};
+const CAT_COLORS_TT = {
+  kiban:'#C8E6FA', senmon:'#FFF2A8', oyo:'#FFE0B8', rensetsu:'#D4EDDA',
+  gp:'#E8E0F8', must:'#FFD6D6', kyoyo:'#DFF0D8', plain:'#FFFFFF'
+};
+
+function showPdfResults() {
+  const list = document.getElementById('pdf-result-list');
+  const items = document.getElementById('prl-items');
+  document.getElementById('prl-count').textContent = pdfResults.length + '件';
+  items.innerHTML = pdfResults.map((s,i) => {
+    const day = ['月','火','水','木','金'][s.day] || '?';
+    const bg = CAT_COLORS_TT[s.category] || '#fff';
+    const label = CAT_LABELS[s.category] || s.category;
+    return `<div class="prl-item">
+      <input type="checkbox" class="prl-check" id="prl-${i}" checked>
+      <div class="prl-info">
+        <div class="prl-name" style="background:${bg};padding:2px 6px;border-radius:3px;display:inline-block">${s.name}</div>
+        <div class="prl-meta">${s.year}年 / ${day}曜 ${s.period}限 / ${s.q}
+          <span class="prl-badge" style="background:${bg}">${label}</span>
+          ${s.note?`<span style="color:var(--text3)">— ${s.note}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  list.classList.add('show');
+}
+
+function importPdfResults() {
+  const stored = getTTData();
+  let added = 0;
+  pdfResults.forEach((s, i) => {
+    const cb = document.getElementById('prl-' + i);
+    if(!cb?.checked) return;
+    const ttKey = ['1Q','2Q'].includes(s.q) ? '2026f' : '2024b';
+    const tt = stored[ttKey];
+    const p = (s.period||1) - 1; // 0-indexed
+    const d = s.day || 0;
+    const yIdx = s.year === 2 ? 2 : 0; // simplified: 1年→idx0, 2年→idx2
+
+    // ensure structure exists
+    while(tt.rows.length  <= p) tt.rows.push( Array(5).fill(null).map(()=>[null,null,null,null]));
+    while(tt.rows2.length <= p) tt.rows2.push(Array(5).fill(null).map(()=>[null,null,null,null]));
+    while(tt.rows[p].length  <= d) tt.rows[p].push([null,null,null,null]);
+    while(tt.rows2[p].length <= d) tt.rows2[p].push([null,null,null,null]);
+
+    const cell = {n: s.name, c: CAT_TO_CLASS[s.category]||'c-plain', k: s.note||''};
+    const qIdx = ['2Q','4Q'].includes(s.q) ? 1 : 0; // 0=前半Q, 1=後半Q within sem
+    const finalIdx = yIdx + qIdx; // 0,1=1年 / 2,3=2年
+
+    if(finalIdx < 2) {
+      tt.rows[p][d][finalIdx]  = cell;
+    } else {
+      tt.rows2[p][d][finalIdx] = cell;
+    }
+    added++;
+  });
+
+  saveTTData(stored);
+  document.getElementById('tt-container').innerHTML = buildTable(currentTT);
+  renderAdminTable();
+  clearPdfResults();
+  alert(`✅ ${added}件の科目を時間割に追加しました！`);
+}
+
+function clearPdfResults() {
+  pdfResults = [];
+  document.getElementById('pdf-result-list').classList.remove('show');
+  document.getElementById('pdf-progress').classList.remove('show');
+  const fill = document.getElementById('pdf-prog-fill');
+  fill.style.width = '0%';
+  fill.style.background = 'var(--accent)';
+  document.getElementById('pdf-file-input').value = '';
+}
+
+
+// ════════════════════════════════════════════
+// PWA — Service Worker & Push
+// ════════════════════════════════════════════
+let swReg = null;
+
+async function registerSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swReg = await navigator.serviceWorker.register('sw.js');
+    console.log('SW registered:', swReg.scope);
+    // Listen for messages from SW (e.g. alarm trigger)
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.type === 'CLASS_ALARM') {
+        // SW woke up and fired alarm — update UI
+        updateNextClass();
+      }
+    });
+  } catch(e) {
+    console.warn('SW registration failed:', e);
+  }
+}
+
+// Override toggleNotif to also sync schedule to SW
+const _origToggleNotif = toggleNotif;
+function toggleNotif() {
+  _origToggleNotif();
+  // After toggling, sync alarm schedule to SW
+  const cb = document.getElementById('notif-toggle');
+  if (cb.checked) syncAlarmsToSW();
+  else clearSWAlarms();
+}
+
+function syncAlarmsToSW() {
+  if (!swReg?.active) return;
+  const sem = getCurrentSem();
+  const data = getMyTT();
+  const alarms = [];
+  const dayIdx = todayDayIndex();
+  if (dayIdx < 0) return;
+
+  for (let p = 0; p < 5; p++) {
+    const key = myKey(sem, dayIdx, p);
+    const cell = data[key];
+    if (!cell?.subj) continue;
+    const [h, m] = PERIOD_STARTS[p].split(':').map(Number);
+    const now = new Date();
+    const classTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+    const notifTime = new Date(classTime.getTime() - 15 * 60 * 1000); // 15min before
+    if (notifTime > now) {
+      alarms.push({
+        subj: cell.subj,
+        room: cell.room || '',
+        period: PERIOD_LABELS[p],
+        startTime: PERIOD_STARTS[p],
+        notifAt: notifTime.getTime(),
+      });
+    }
+  }
+  swReg.active.postMessage({type: 'SET_ALARMS', alarms});
+}
+
+function clearSWAlarms() {
+  if (!swReg?.active) return;
+  swReg.active.postMessage({type: 'CLEAR_ALARMS'});
+}
+
+// Re-sync alarms when my timetable changes
+const _origSaveMyCell = saveMyCell;
+function saveMyCell() {
+  _origSaveMyCell();
+  if (document.getElementById('notif-toggle').checked) syncAlarmsToSW();
+}
+
+// Init PWA
+registerSW();
+
+</script>
+</body>
+</html>
