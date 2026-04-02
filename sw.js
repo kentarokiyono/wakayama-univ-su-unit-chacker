@@ -69,8 +69,8 @@ function scheduleAlarms() {
 function fireAlarm(alarm) {
   self.registration.showNotification('📚 もうすぐ授業です', {
     body: `${alarm.period}　${alarm.subj}${alarm.room ? '\n📍 ' + alarm.room : ''}\n15分後に開始（${alarm.startTime}〜）`,
-    icon: './icon-192.png',
-    badge: './icon-192.png',
+    icon: './学生自治会.png',
+    badge: './学生自治会.png',
     tag: `class-${alarm.period}`,
     renotify: false,
     requireInteraction: false,
